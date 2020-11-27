@@ -2,16 +2,22 @@
 
 class Autentikasi extends CI_Controller
 {
-   
-    public function index()
+
+    public function __construct()
     {
-        $this->load->view('autentikasi/login', array('title' => 'Login'));
+        parent::__construct();
+        $this->load->model('Model_Autentikasi');
+        
+        if($this->session->stat)
+        {
+            redirect('admin');
+        }
     }
+   
+    public function index() { $this->load->view('autentikasi/login', array('title' => 'Login')); }
 
     public function masuk()
     {   
-        $email = 'alfath.noor17@gmail.com';
-        $password = md5('Admin12345');
 
         $this->form_validation->set_rules(
             'email',
@@ -27,20 +33,23 @@ class Autentikasi extends CI_Controller
                 'required' => 'Password harus diisi, oke...'
         ]);
 
-
         // cek form data bener gak
         if($this->form_validation->run())
         {
+            
             //jalan
-            $inputPass = md5($this->input->post('password'));
+            //ambil data dari database
+            $data = $this->Model_Autentikasi->getUser($this->input->post('email'));
 
-            if($this->input->post('email') == $email)
+            // var_dump($data);
+
+            if($this->input->post('email') == $data[0]['email'])
             {
                 // Email bener
-                if (md5($this->input->post('password')) == $password) {
-                    echo "Password MD5 :  {$password} <br>";
-                    echo "Email : $email";
-
+                if (md5($this->input->post('password')) == $data[0]['password']) 
+                {
+                    $_SESSION['email'] = $data[0]['email'];
+                    $_SESSION['stat'] = 1;
                     redirect('admin');
                 }
                 else
@@ -62,5 +71,64 @@ class Autentikasi extends CI_Controller
             //gk jalan
             $this->index();
         }
+    }
+
+    public function register() { $this->load->view('autentikasi/register', array('title' => 'Register')); }
+
+    public function simpan() 
+    {
+        $this->form_validation->set_rules(
+            'namadep',
+            'Namadep',
+            'trim|required', [
+                'required' => 'Nama harus diisi'
+        ]);
+        $this->form_validation->set_rules(
+            'email',
+            'Email',
+            'trim|valid_email|required|is_unique[user.email]', [
+                'required' => 'Email harus diisi',
+                'valid_email' => 'Email tidak valid',
+                'is_unique' => 'Email sudah terdaftar'
+        ]);
+        $this->form_validation->set_rules(
+            'password1',
+            'Password1',
+            'trim|min_length[8]|required|matches[password2]', [
+                'required' => 'Password harus diisi',
+                'min_length' => 'Password terlalu pendek',
+                'matches' => 'Password tidak sama'
+        ]);
+        $this->form_validation->set_rules(
+            'password2',
+            'Password2',
+            'trim|min_length[8]|required|matches[password1]', [
+                'required' => 'Password harus diisi',
+                'min_length' => 'Password terlalu pendek'
+        ]);
+        
+
+        if($this->form_validation->run())
+        {
+            $data = array(
+                'namadep'   => htmlspecialchars($this->input->post('namadep')),
+                'namabel'   => htmlspecialchars($this->input->post('namabel')),
+                'email'   => $this->input->post('email'),
+                'password'   => md5($this->input->post('password1'))
+            );
+
+            $this->Model_Autentikasi->addUser($data);
+            header('Location: '. base_url('autentikasi/masuk'));
+        } else {
+            $this->register();
+        }
+    }
+
+    public function keluar()
+    {
+        unset(
+            $_SESSION['email'],
+            $_SESSION['stat']
+        );
     }
 }

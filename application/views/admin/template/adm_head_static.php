@@ -31,7 +31,7 @@
                         <a class="dropdown-item" href="#">Settings</a>
                         <a class="dropdown-item" href="#">Activity Log</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="<?= base_url('admin/login'); ?>">Logout</a>
+                        <a class="dropdown-item" href="<?= base_url('autentikasi/logout'); ?>">Logout</a>
                     </div>
                 </li>
             </ul>

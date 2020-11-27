@@ -6,7 +6,7 @@
             <i class='ti ti-check'></i>
           </div>
           <h4 style='margin: 0;'>TRANSAKSI TELAH TERSIMPAN</h4>
-          <a href="<?= base_url(); ?>" class='mt-4'>Kembali ke form</a>
+          <a href="<?= base_url('studi/'); ?>" class='mt-4'>Kembali ke form</a>
         </div>
       </div>
       

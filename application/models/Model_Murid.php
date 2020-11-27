@@ -2,7 +2,7 @@
 
 class Model_Murid extends CI_Model
 {
-    public function __construct() { $this->load->database(); }
+    public function __construct() { $this->load->database('murid'); }
 
     public function GetMurid($nim = false)
     {

@@ -2,6 +2,14 @@
 
 class Admin extends CI_Controller
 {
+    public function __construct()
+    {        
+        parent::__construct();
+        if(!$this->session->stat)
+        {
+            redirect('autentikasi');
+        }
+    }
     public function viewTemplate($url, $data = null, $mode = null)
     {
         switch($mode)
@@ -98,4 +106,5 @@ class Admin extends CI_Controller
         $data['title'] = 'Tables';
         $this->viewTemplate('admin/tables', $data);
     }
+    
 }
