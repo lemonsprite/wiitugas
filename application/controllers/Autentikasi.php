@@ -8,7 +8,7 @@ class Autentikasi extends CI_Controller
         parent::__construct();
         $this->load->model('Model_Autentikasi');
         
-        if($this->session->stat)
+        if($this->session->stat == '')
         {
             redirect('admin');
         }
